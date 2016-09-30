@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">TestAndroidTaskManager</string>
+
+    <string name="create_task">Создать</string>
+    <string name="remove_tasks">Удалить</string>
 </resources>
