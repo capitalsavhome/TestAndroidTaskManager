@@ -25,7 +25,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/btn_add_stage"
         android:text="@string/btn_add_stage"
-        android:layout_gravity="center_horizontal"/>
+        android:layout_gravity="center_horizontal"
+        android:onClick="bntClickAddTask"/>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -36,7 +37,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/btn_set_startDate"
-        android:id="@+id/btn_add_startDate"/>
+        android:id="@+id/btn_add_startDate"
+        android:onClick="bntClickAddTask"/>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -46,11 +48,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/btn_set_endDate"
-        android:id="@+id/btn_add_endDate"/>
+        android:id="@+id/btn_add_endDate"
+        android:onClick="bntClickAddTask"/>
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/btn_save_add_task"
         android:text="@string/btn_save"
-        android:layout_gravity="center_horizontal"/>
+        android:layout_gravity="center_horizontal"
+        android:onClick="bntClickAddTask"/>
 </LinearLayout>
