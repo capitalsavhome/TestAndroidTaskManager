@@ -6,4 +6,8 @@
     <string name="btn_set_endDate">Установить дату конца задания</string>
     <string name="btn_save">Сохранить</string>
 
+
+    <string name="create_task">Создать</string>
+    <string name="remove_tasks">Удалить</string>
+
 </resources>
