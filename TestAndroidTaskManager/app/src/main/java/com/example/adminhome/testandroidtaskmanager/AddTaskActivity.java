@@ -12,7 +12,9 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 public class AddTaskActivity extends AppCompatActivity {
 
@@ -146,12 +148,20 @@ public class AddTaskActivity extends AppCompatActivity {
             new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+            //create calendar which contain date from DataPickerDialog
+            Calendar calendar = new GregorianCalendar(year, month, dayOfMonth);
+            //convert calendar to readable format
+            String string = new SimpleDateFormat("dd-MM-yyyy").format(calendar.getTime());
+            //make string of selected date to put it into data Base
+            String dataBaseDate = dayOfMonth + "-" + month + "-" + year;
             switch (mWhatDateSet) {
                 case SET_START_DATE :
-                    String date = dayOfMonth + "-" + month + "-" + year;
-                    mStartDateSelected = date;
+                    mStartDateSelected = dataBaseDate;
+                    mTextViewStartDate.setText(string);
                     break;
                 case SET_END_DATE :
+                    mEndDateSelected = dataBaseDate;
+                    mTextViewEndDate.setText(string);
                     break;
             }
         }
