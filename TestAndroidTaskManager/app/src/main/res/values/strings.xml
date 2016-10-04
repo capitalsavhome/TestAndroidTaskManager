@@ -10,4 +10,7 @@
     <string name="create_task">Создать</string>
     <string name="remove_tasks">Удалить</string>
 
+    <string name="dialog_add_stage">Добавление этапа</string>
+    <string name="input_new_stage">Введите новый этап</string>
+
 </resources>
