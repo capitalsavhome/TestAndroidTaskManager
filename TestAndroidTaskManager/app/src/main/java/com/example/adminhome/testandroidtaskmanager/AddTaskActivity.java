@@ -146,7 +146,7 @@ public class AddTaskActivity extends AppCompatActivity {
 
         mStagesAL = new ArrayList<>();
 
-        mMySQLiteOpenHelper = new MySQLiteOpenHelper(this);
+        //mMySQLiteOpenHelper = new MySQLiteOpenHelper(this);
 
         mArrayAdapter = new ArrayAdapter<Stage>(this, android.R.layout.simple_list_item_1,
                 mStagesAL){

@@ -1,6 +1,7 @@
 package com.example.adminhome.testandroidtaskmanager;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,18 +19,87 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    private final static int FIRST_CURRENT_TASK = 0;
+
+    /**
+     * button to create new Task (open new Activity)
+     */
     private Button mButtonCreate;
 
-    private ArrayList<String> AL = new ArrayList<>();
+    /**
+     * button to delete selected Tasks
+     */
+    private Button mButtonDelete;
 
-    private ArrayAdapter<String> arrayAdapter;
+    /**
+     * array adapter for ListView
+     */
+    private ArrayAdapter<Task> mArrayAdapter;
+
+    /**
+     * listView to show all task
+     */
+    private ListView mListView;
+
+    /**
+     * arrayList of Tasks (from Db)
+     */
+    private ArrayList<Task> mTasksAL;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //initialization of view elements
         mButtonCreate = (Button) findViewById(R.id.btnCreateTask);
+        mButtonDelete = (Button) findViewById(R.id.btnRemoveTasks);
+        mListView = (ListView) findViewById(R.id.lvCurrentTasks);
+        mTasksAL = new ArrayList<>();
+
+        final LayoutInflater inflater = this.getLayoutInflater();
+
+        mArrayAdapter = new ArrayAdapter<Task>(this, android.R.layout.simple_list_item_1,
+                mTasksAL) {
+
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view = inflater.inflate(R.layout.tasks_list_view_item, parent, false);
+                TextView textView = (TextView) view.findViewById(R.id.tvCurrentTitle);
+                final Task task = mTasksAL.get(position);
+                textView.setText(task.getmTitle().toString());
+
+                view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(MainActivity.this, WatchOneTaskActivity.class);
+                        int taskId = 0;
+                        //TODO code for getting id of current selected Task
+                        intent.putExtra("Task_id", taskId);
+                        startActivity(intent);
+                    }
+                });
+
+                return view;
+            }
+        };
+
+        //==========================================================================================
+        ArrayList <Stage> stageArrayList = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            Stage stage = new Stage("Stage " + i);
+            stageArrayList.add(stage);
+        }
+        for (int i = 0; i < 10; i++) {
+            Task task = new Task("Task " + i, "01.01.01", "01.01.01");
+            task.setmStagesAL(stageArrayList);
+            mTasksAL.add(task);
+        }
+        mArrayAdapter.notifyDataSetChanged();
+        //==========================================================================================
+
 
 //        AL = new ArrayList<>();
 //

@@ -23,7 +23,7 @@ public class Task {
      */
     private String mEndDate;
 
-    private ArrayList<Stage> mStagesAL;
+    private ArrayList<Stage> mStagesAL = new ArrayList<>();
 
     public Task(String mTitle, String mStartDate, String mEndDate) {
         this.mTitle = mTitle;
