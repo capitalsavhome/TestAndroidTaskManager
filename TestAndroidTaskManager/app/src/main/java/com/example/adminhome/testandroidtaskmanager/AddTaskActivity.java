@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +39,11 @@ public class AddTaskActivity extends AppCompatActivity {
     public final static int ERROR_DB_READ_CODE_TASKS = 148;
 
     public final static int ERROR_DB_WRITE_CODE_STAGE = 149;
+
+    public final static String SELECT_MAX_ID_QUERY = "SELECT MAX(" + MySQLiteOpenHelper.TASK_ID
+            + ") FROM " + MySQLiteOpenHelper.TASKS_TABLE_NAME + ";";
+
+
 
     /**
      * editText for input Title of task
@@ -124,6 +130,11 @@ public class AddTaskActivity extends AppCompatActivity {
      */
     private ArrayAdapter mArrayAdapter;
 
+    /**
+     * object for using dataBase
+     */
+    private SQLiteDatabase mDatabase;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,6 +154,8 @@ public class AddTaskActivity extends AppCompatActivity {
         final LayoutInflater inflater = this.getLayoutInflater();
         mDialogView = inflater.inflate(R.layout.dialog_maket, null, false);
         mEditTextStageTitle = (EditText) mDialogView.findViewById(R.id.edt_text_input_stage_name);
+
+        mDatabase = MainActivity.mMySQLiteOpenHelper.getWritableDatabase();
 
         mStagesAL = new ArrayList<>();
 
@@ -178,7 +191,7 @@ public class AddTaskActivity extends AppCompatActivity {
 
         switch (view.getId()) {
             case R.id.btn_save_add_task :
-                System.out.println("======" + mStartDateSelected);
+                saveNewTask();
                 break;
             case R.id.btn_add_stage :
                 showAddStageDialog();
@@ -196,7 +209,7 @@ public class AddTaskActivity extends AppCompatActivity {
         String taskTitle = mEditTextTitle.getText().toString();
 
         Task task = new Task(taskTitle, mStartDateSelected, mEndDateSelected);
-        task.setmStagesAL(mStagesAL);
+        //task.setmStagesAL(mStagesAL);
 
         writeNewTaskToDb(task);
 
@@ -212,37 +225,42 @@ public class AddTaskActivity extends AppCompatActivity {
      * @param task - current created Task
      */
     public void writeNewTaskToTasks(Task task) {
-        SQLiteDatabase database = MainActivity.mMySQLiteOpenHelper.getWritableDatabase();
         ContentValues row = new ContentValues();
         row.put(MySQLiteOpenHelper.TITLE_COLUMN, task.getmTitle());
         row.put(MySQLiteOpenHelper.START_DATE_COLUMN, task.getmStartDate());
         row.put(MySQLiteOpenHelper.END_DATE_COLUMN, task.getmEndDate());
-        long rowId = database.insert(MySQLiteOpenHelper.TASKS_TABLE_NAME, null, row);
+        long rowId = mDatabase.insert(MySQLiteOpenHelper.TASKS_TABLE_NAME, null, row);
         if (rowId != -1) {
-
+            readIdFromCurrentTask();
+        }
+        else {
+            Log.d(Constants.TAG, "Error writeNewTaskToTasks ");
         }
     }
 
-    public void writeIdFromCurrentTask(Task task) {
-        SQLiteDatabase database = MainActivity.mMySQLiteOpenHelper.getReadableDatabase();
-        Cursor cursor = database.query(MySQLiteOpenHelper.TASKS_TABLE_NAME,
-                null, null, null, null, null, null);
-
+    public void readIdFromCurrentTask() {
+        Cursor cursor = mDatabase.rawQuery(SELECT_MAX_ID_QUERY, null);
+        cursor.moveToFirst();
+        int id = cursor.getInt(0);
+        cursor.close();
+        writeNewSagesToTable(id);
     }
 
-    public void writeNewSagesToTable() {
+    public void writeNewSagesToTable(int id) {
 
         for (int i = 0; i < mStagesAL.size(); i++) {
             Stage stage = mStagesAL.get(i);
-            SQLiteDatabase database = MainActivity.mMySQLiteOpenHelper.getWritableDatabase();
             ContentValues row = new ContentValues();
             row.put(MySQLiteOpenHelper.STAGE_NAME_COLUMN, stage.getmSageName());
-//            row.put(MySQLiteOpenHelper.START_DATE_COLUMN, task.getmStartDate());
-//            row.put(MySQLiteOpenHelper.END_DATE_COLUMN, task.getmEndDate());
-            long rowId = database.insert(MySQLiteOpenHelper.TASKS_TABLE_NAME, null, row);
+            row.put(MySQLiteOpenHelper.STAGE_ID_COLUMN, id);
+            long rowId = mDatabase.insert(MySQLiteOpenHelper.STAGES_TABLE_NAME, null, row);
+            if (rowId != -1) {
+                finish();
+            }
+            else {
+                Log.d(Constants.TAG, "Error writeNewStageToStages");
+            }
         }
-
-
     }
 
     /**
@@ -333,9 +351,4 @@ public class AddTaskActivity extends AppCompatActivity {
             }
         });
     }
-
-    public void showErrorDialog(int errorCode) {
-
-    }
-
 }

@@ -53,14 +53,27 @@ public class MySQLiteOpenHelper extends SQLiteOpenHelper implements BaseColumns{
      */
     public static final String STAGES_TABLE_NAME = "stages";
 
+    /**
+     * constant with name of stage
+     */
     public static final String STAGE_NAME_COLUMN = "name";
+
+    /**
+     * id (Auto Increment) of task
+     */
+    public static final String TASK_ID = "_id";
+
+    /**
+     * id (Auto Increment) of stage
+     */
+    public static final String ID_STAGE = "_id";
 
 
     /**
      * constant with SQL request to DataBase (create new table Tasks)
      */
     public static final String TABLE_TASKS_CREATE_SCRIPT = "CREATE TABLE "
-            + TASKS_TABLE_NAME + " (" + BaseColumns._ID
+            + TASKS_TABLE_NAME + " (" + TASK_ID
             + " integer primary key autoincrement, " + TITLE_COLUMN
             + " text not null, " + START_DATE_COLUMN + " text, " + END_DATE_COLUMN
             + " text);";
@@ -69,10 +82,10 @@ public class MySQLiteOpenHelper extends SQLiteOpenHelper implements BaseColumns{
      * constant with SQL request to DataBase (create new table Stages)
      */
     public static final String TABLE_STAGES_CREATE_SCRIPT = "CREATE TABLE "
-            + STAGES_TABLE_NAME + " (" + BaseColumns._ID
+            + STAGES_TABLE_NAME + " (" + ID_STAGE
             + " integer primary key autoincrement, " + STAGE_NAME_COLUMN
             + " text not null, " + STAGE_ID_COLUMN + " integer not null, FOREIGN KEY ("
-            + STAGE_ID_COLUMN + ") REFERENCES " + TASKS_TABLE_NAME + "(" + BaseColumns._ID + ")";
+            + STAGE_ID_COLUMN + ") REFERENCES " + TASKS_TABLE_NAME + "(" + TASK_ID + ")";
 
     public MySQLiteOpenHelper (Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

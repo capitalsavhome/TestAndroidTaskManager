@@ -93,20 +93,6 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        //==========================================================================================
-        ArrayList <Stage> stageArrayList = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            Stage stage = new Stage("Stage " + i);
-            stageArrayList.add(stage);
-        }
-        for (int i = 0; i < 10; i++) {
-            Task task = new Task("Task " + i, "01.01.01", "01.01.01");
-            task.setmStagesAL(stageArrayList);
-            mTasksAL.add(task);
-        }
-        mArrayAdapter.notifyDataSetChanged();
-        //==========================================================================================
-
 
 //        AL = new ArrayList<>();
 //
