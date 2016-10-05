@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -31,6 +32,12 @@ public class AddTaskActivity extends AppCompatActivity {
     private final static int SET_START_DATE = 123;
 
     private final static int SET_END_DATE = 321;
+
+    public final static int ERROR_DB_WRITE_CODE_TASKS = 147;
+
+    public final static int ERROR_DB_READ_CODE_TASKS = 148;
+
+    public final static int ERROR_DB_WRITE_CODE_STAGE = 149;
 
     /**
      * editText for input Title of task
@@ -117,13 +124,6 @@ public class AddTaskActivity extends AppCompatActivity {
      */
     private ArrayAdapter mArrayAdapter;
 
-    /**
-     * MySQLiteOpenHelper for access to dataBase
-     */
-    private MySQLiteOpenHelper mMySQLiteOpenHelper;
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,7 +146,7 @@ public class AddTaskActivity extends AppCompatActivity {
 
         mStagesAL = new ArrayList<>();
 
-        //mMySQLiteOpenHelper = new MySQLiteOpenHelper(this);
+
 
         mArrayAdapter = new ArrayAdapter<Stage>(this, android.R.layout.simple_list_item_1,
                 mStagesAL){
@@ -204,11 +204,45 @@ public class AddTaskActivity extends AppCompatActivity {
     }
 
     public void writeNewTaskToDb(Task task) {
-        SQLiteDatabase database = mMySQLiteOpenHelper.getWritableDatabase();
+        writeNewTaskToTasks(task);
+    }
+
+    /**
+     * method write new Task to table Tasks
+     * @param task - current created Task
+     */
+    public void writeNewTaskToTasks(Task task) {
+        SQLiteDatabase database = MainActivity.mMySQLiteOpenHelper.getWritableDatabase();
         ContentValues row = new ContentValues();
-        row.put("task_title", task.getmTitle());
-        row.put("start_date", task.getmStartDate());
-        row.put("end_date", task.getmEndDate());
+        row.put(MySQLiteOpenHelper.TITLE_COLUMN, task.getmTitle());
+        row.put(MySQLiteOpenHelper.START_DATE_COLUMN, task.getmStartDate());
+        row.put(MySQLiteOpenHelper.END_DATE_COLUMN, task.getmEndDate());
+        long rowId = database.insert(MySQLiteOpenHelper.TASKS_TABLE_NAME, null, row);
+        if (rowId != -1) {
+
+        }
+    }
+
+    public void writeIdFromCurrentTask(Task task) {
+        SQLiteDatabase database = MainActivity.mMySQLiteOpenHelper.getReadableDatabase();
+        Cursor cursor = database.query(MySQLiteOpenHelper.TASKS_TABLE_NAME,
+                null, null, null, null, null, null);
+
+    }
+
+    public void writeNewSagesToTable() {
+
+        for (int i = 0; i < mStagesAL.size(); i++) {
+            Stage stage = mStagesAL.get(i);
+            SQLiteDatabase database = MainActivity.mMySQLiteOpenHelper.getWritableDatabase();
+            ContentValues row = new ContentValues();
+            row.put(MySQLiteOpenHelper.STAGE_NAME_COLUMN, stage.getmSageName());
+//            row.put(MySQLiteOpenHelper.START_DATE_COLUMN, task.getmStartDate());
+//            row.put(MySQLiteOpenHelper.END_DATE_COLUMN, task.getmEndDate());
+            long rowId = database.insert(MySQLiteOpenHelper.TASKS_TABLE_NAME, null, row);
+        }
+
+
     }
 
     /**
@@ -298,6 +332,10 @@ public class AddTaskActivity extends AppCompatActivity {
                 ((ViewGroup) (mDialogView.getParent())).removeAllViews();
             }
         });
+    }
+
+    public void showErrorDialog(int errorCode) {
+
     }
 
 }

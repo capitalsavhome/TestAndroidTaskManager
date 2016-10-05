@@ -46,12 +46,19 @@ public class MainActivity extends AppCompatActivity {
      */
     private ArrayList<Task> mTasksAL;
 
+    /**
+     * MySQLiteOpenHelper for access to dataBase
+     */
+    public static MySQLiteOpenHelper mMySQLiteOpenHelper;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mMySQLiteOpenHelper = new MySQLiteOpenHelper(this);
 
         //initialization of view elements
         mButtonCreate = (Button) findViewById(R.id.btnCreateTask);

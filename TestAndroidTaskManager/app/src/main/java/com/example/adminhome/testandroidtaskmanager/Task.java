@@ -23,6 +23,11 @@ public class Task {
      */
     private String mEndDate;
 
+    /**
+     * id from data Base to find stages of current task
+     */
+    private int mTask_id;
+
     private ArrayList<Stage> mStagesAL = new ArrayList<>();
 
     public Task(String mTitle, String mStartDate, String mEndDate) {
@@ -64,5 +69,13 @@ public class Task {
             Stage stage = arrayList.get(i);
             mStagesAL.add(stage);
         }
+    }
+
+    public int getmTask_id() {
+        return mTask_id;
+    }
+
+    public void setmTask_id(int mTask_id) {
+        this.mTask_id = mTask_id;
     }
 }
