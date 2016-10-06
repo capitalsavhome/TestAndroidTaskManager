@@ -166,7 +166,7 @@ public class AddTaskActivity extends AppCompatActivity {
             @Override
             public  View getView(final int position, View convertView, ViewGroup parent) {
 
-                View view = inflater.inflate(R.layout.activity_add_task, parent, false);
+                View view = inflater.inflate(R.layout.add_stages_list_view_item, parent, false);
                 //getting values from each holiday
                 TextView textViewNumber = (TextView) view.findViewById(R.id.tv_num_stage_lv);
                 TextView textViewName = (TextView) view.findViewById(R.id.tv_name_stage_lv);
@@ -255,6 +255,8 @@ public class AddTaskActivity extends AppCompatActivity {
             row.put(MySQLiteOpenHelper.STAGE_ID_COLUMN, id);
             long rowId = mDatabase.insert(MySQLiteOpenHelper.STAGES_TABLE_NAME, null, row);
             if (rowId != -1) {
+                Intent intent = new Intent(AddTaskActivity.this, MainActivity.class);
+                startActivity(intent);
                 finish();
             }
             else {
@@ -324,10 +326,6 @@ public class AddTaskActivity extends AppCompatActivity {
         mAlertDialogBuilder.setTitle(R.string.dialog_add_stage);
         //set view for dialogBuilder
         mAlertDialogBuilder.setView(mDialogView);
-        //create dialog
-        mAlertDialog = mAlertDialogBuilder.create();
-        //show dialog
-        mAlertDialog.show();
 
         //set positive Button onClickListener
         mAlertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -350,5 +348,10 @@ public class AddTaskActivity extends AppCompatActivity {
                 ((ViewGroup) (mDialogView.getParent())).removeAllViews();
             }
         });
+
+        //create dialog
+        mAlertDialog = mAlertDialogBuilder.create();
+        //show dialog
+        mAlertDialog.show();
     }
 }

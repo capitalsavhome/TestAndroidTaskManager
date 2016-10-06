@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
             public View getView(int position, View convertView, ViewGroup parent) {
                 View view = inflater.inflate(R.layout.tasks_list_view_item, parent, false);
                 TextView textView = (TextView) view.findViewById(R.id.tvCurrentTitle);
-                final Task task = mTasksAL.get(position);
+                Task task = mTasksAL.get(position);
                 textView.setText(task.getmTitle().toString());
 
                 view.setOnClickListener(new View.OnClickListener() {
@@ -105,53 +105,19 @@ public class MainActivity extends AppCompatActivity {
                 return view;
             }
         };
-
-
-//        AL = new ArrayList<>();
-//
-//        for (int i = 0; i < 10; i++) {
-//            String string = "Test " + Integer.toString(i);
-//            AL.add(string);
-//        }
-//
-//        final LayoutInflater inflater = this.getLayoutInflater();
-//
-//        ListView listView = (ListView) findViewById(R.id.lvCurrentTasks);
-//
-//        arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, AL){
-//            @Override
-//            public  View getView(final int position, View convertView, ViewGroup parent) {
-//
-//                View view = inflater.inflate(R.layout.tasks_list_view_item, parent, false);
-//                //getting values from each holiday
-//                TextView textView = (TextView) view.findViewById(R.id.tvCurrentTitle);
-//                String string = AL.get(position);
-//                //System.out.println("==========" + string);
-//                textView.setText(string);
-//
-//                view.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        Toast.makeText(MainActivity.this, "Test" + position, Toast.LENGTH_SHORT).show();
-//                    }
-//                });
-//
-//                return view;
-//            }
-//        };
-//        listView.setAdapter(arrayAdapter);
-////        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-////            @Override
-////            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-////                Toast.makeText(MainActivity.this, "Test ", Toast.LENGTH_SHORT).show();
-////                System.out.println("=====Test " + i);
-////            }
-////        });
+        mListView.setAdapter(mArrayAdapter);
     }
 
     public void btnMainClick(View view) {
-        Intent intent = new Intent(MainActivity.this, AddTaskActivity.class);
-        startActivity(intent);
+        int id = view.getId();
+        switch (id) {
+            case R.id.btnCreateTask:
+                Intent intent = new Intent(MainActivity.this, AddTaskActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.btnRemoveTasks:
+                break;
+        }
     }
 
     public void loadTasksFromDb() {
@@ -171,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
                 int id = cursor.getInt(indexId);
                 Task task = new Task(taskName, startDate, endDate);
                 task.setmTask_id(id);
-                mArrayAdapter.notifyDataSetChanged();
+                mTasksAL.add(task);
             }
             while (cursor.moveToNext());
             cursor.close();

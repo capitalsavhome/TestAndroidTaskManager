@@ -85,7 +85,7 @@ public class MySQLiteOpenHelper extends SQLiteOpenHelper implements BaseColumns{
             + STAGES_TABLE_NAME + " (" + ID_STAGE
             + " integer primary key autoincrement, " + STAGE_NAME_COLUMN
             + " text not null, " + STAGE_ID_COLUMN + " integer not null, FOREIGN KEY ("
-            + STAGE_ID_COLUMN + ") REFERENCES " + TASKS_TABLE_NAME + "(" + TASK_ID + ")";
+            + STAGE_ID_COLUMN + ") REFERENCES " + TASKS_TABLE_NAME + "(" + TASK_ID + "));";
 
     public MySQLiteOpenHelper (Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
