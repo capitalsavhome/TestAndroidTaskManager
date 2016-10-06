@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -88,16 +89,15 @@ public class MainActivity extends AppCompatActivity {
             public View getView(int position, View convertView, ViewGroup parent) {
                 View view = inflater.inflate(R.layout.tasks_list_view_item, parent, false);
                 TextView textView = (TextView) view.findViewById(R.id.tvCurrentTitle);
-                Task task = mTasksAL.get(position);
+                final Task task = mTasksAL.get(position);
                 textView.setText(task.getmTitle().toString());
 
                 view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        int id = task.getmTask_id();
                         Intent intent = new Intent(MainActivity.this, WatchOneTaskActivity.class);
-                        int taskId = 0;
-                        //TODO code for getting id of current selected Task
-                        intent.putExtra("Task_id", taskId);
+                        intent.putExtra("Task_id", id);
                         startActivity(intent);
                     }
                 });
@@ -116,13 +116,14 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
                 break;
             case R.id.btnRemoveTasks:
+                deleteSelectedTasks();
                 break;
         }
     }
 
     public void loadTasksFromDb() {
         Cursor cursor = mDatabase.query(MySQLiteOpenHelper.TASKS_TABLE_NAME, null, null, null, null,
-                null, MySQLiteOpenHelper.TITLE_COLUMN);
+                null, null);
 
         if (cursor.moveToFirst()) {
             int indexId = cursor.getColumnIndex(MySQLiteOpenHelper.TASK_ID);
@@ -145,5 +146,31 @@ public class MainActivity extends AppCompatActivity {
         else {
             Log.d(Constants.TAG, "Can\'t position on first string of cursor");
         }
+    }
+
+    public void deleteSelectedTasks() {
+        for (int i = 0; i < mTasksAL.size(); i++) {
+            View view = mListView.getChildAt(i);
+            CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkbox_delete);
+            if (checkBox.isChecked()) {
+                Task task = mTasksAL.get(i);
+                int id = task.getmTask_id();
+                deleteTaskFromDataBase(id);
+            }
+        }
+        for (int i = 0; i < mTasksAL.size(); i++) {
+            mTasksAL.remove(i);
+            mArrayAdapter.notifyDataSetChanged();
+        }
+        loadTasksFromDb();
+
+    }
+
+    public void deleteTaskFromDataBase(int id) {
+        mDatabase.execSQL("DELETE FROM " + MySQLiteOpenHelper.STAGES_TABLE_NAME + " WHERE "
+                + MySQLiteOpenHelper.STAGE_ID_COLUMN + " = " + id + ";");
+        mDatabase.execSQL("DELETE FROM " + MySQLiteOpenHelper.TASKS_TABLE_NAME + " WHERE "
+                + MySQLiteOpenHelper.TASK_ID + " = " + id + ";");
+        Log.d(Constants.TAG, "delete successful");
     }
 }
