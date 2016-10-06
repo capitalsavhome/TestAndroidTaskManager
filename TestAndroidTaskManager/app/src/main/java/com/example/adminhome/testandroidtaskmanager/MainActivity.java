@@ -1,6 +1,8 @@
 package com.example.adminhome.testandroidtaskmanager;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -51,6 +53,13 @@ public class MainActivity extends AppCompatActivity {
      */
     public static MySQLiteOpenHelper mMySQLiteOpenHelper;
 
+    /**
+     * object for using dataBase
+     */
+    private SQLiteDatabase mDatabase;
+
+
+
 
 
     @Override
@@ -65,6 +74,10 @@ public class MainActivity extends AppCompatActivity {
         mButtonDelete = (Button) findViewById(R.id.btnRemoveTasks);
         mListView = (ListView) findViewById(R.id.lvCurrentTasks);
         mTasksAL = new ArrayList<>();
+
+        mDatabase = MainActivity.mMySQLiteOpenHelper.getWritableDatabase();
+
+        loadTasksFromDb();
 
         final LayoutInflater inflater = this.getLayoutInflater();
 
@@ -139,5 +152,32 @@ public class MainActivity extends AppCompatActivity {
     public void btnMainClick(View view) {
         Intent intent = new Intent(MainActivity.this, AddTaskActivity.class);
         startActivity(intent);
+    }
+
+    public void loadTasksFromDb() {
+        Cursor cursor = mDatabase.query(MySQLiteOpenHelper.TASKS_TABLE_NAME, null, null, null, null,
+                null, MySQLiteOpenHelper.TITLE_COLUMN);
+
+        if (cursor.moveToFirst()) {
+            int indexId = cursor.getColumnIndex(MySQLiteOpenHelper.TASK_ID);
+            int indexName = cursor.getColumnIndex(MySQLiteOpenHelper.TITLE_COLUMN);
+            int indexStartDate = cursor.getColumnIndex(MySQLiteOpenHelper.START_DATE_COLUMN);
+            int indexEndDate = cursor.getColumnIndex(MySQLiteOpenHelper.END_DATE_COLUMN);
+
+            do {
+                String taskName = cursor.getString(indexName);
+                String startDate = cursor.getString(indexStartDate);
+                String endDate = cursor.getString(indexEndDate);
+                int id = cursor.getInt(indexId);
+                Task task = new Task(taskName, startDate, endDate);
+                task.setmTask_id(id);
+                mArrayAdapter.notifyDataSetChanged();
+            }
+            while (cursor.moveToNext());
+            cursor.close();
+        }
+        else {
+            Log.d(Constants.TAG, "Can\'t position on first string of cursor");
+        }
     }
 }
