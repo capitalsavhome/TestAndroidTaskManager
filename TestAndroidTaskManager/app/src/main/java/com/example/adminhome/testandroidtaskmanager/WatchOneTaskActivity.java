@@ -1,10 +1,14 @@
 package com.example.adminhome.testandroidtaskmanager;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 
 public class WatchOneTaskActivity extends AppCompatActivity {
 
@@ -48,6 +52,21 @@ public class WatchOneTaskActivity extends AppCompatActivity {
      */
     private Button mButtonStageCompleted;
 
+    /**
+     * id of current task
+     */
+    private int mTaskId;
+
+    /**
+     * object for using dataBase
+     */
+    private SQLiteDatabase mDatabase;
+
+    /**
+     * arrayList of Stages from current Task
+     */
+    private ArrayList <Stage> mStagesAL;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +83,55 @@ public class WatchOneTaskActivity extends AppCompatActivity {
         mButtonDelete = (Button) findViewById(R.id.btn_view_delete_task);
 
         Intent intent = getIntent();
-        mTextViewTitle.setText(Integer.toString(intent.getExtras().getInt("Task_id")));
+        mTaskId = intent.getExtras().getInt("Task_id");
+
+    }
+
+    public void loadTaskFromDb() {
+        Cursor cursor = mDatabase.query(MySQLiteOpenHelper.TASKS_TABLE_NAME, null, null, null, null,
+                null, null);
+
+        if (cursor.moveToFirst()) {
+            int indexId = cursor.getColumnIndex(MySQLiteOpenHelper.TASK_ID);
+            int indexName = cursor.getColumnIndex(MySQLiteOpenHelper.TITLE_COLUMN);
+            int indexStartDate = cursor.getColumnIndex(MySQLiteOpenHelper.START_DATE_COLUMN);
+            int indexEndDate = cursor.getColumnIndex(MySQLiteOpenHelper.END_DATE_COLUMN);
+
+            do {
+                int taskId = cursor.getInt(indexId);
+                if (taskId == mTaskId) {
+                    String taskTitle = cursor.getString(indexName);
+                    String startDate = cursor.getString(indexStartDate);
+                    String endDate = cursor.getString(indexEndDate);
+                    showTask(taskTitle, startDate, endDate);
+                }
+            }
+            while (cursor.moveToNext());
+            cursor.close();
+        }
+    }
+
+    public void loadStageFromDb() {
+        Cursor cursor = mDatabase.query(MySQLiteOpenHelper.STAGES_TABLE_NAME, null, null, null, null,
+                null, null);
+
+        if (cursor.moveToFirst()) {
+            int indexId = cursor.getColumnIndex(MySQLiteOpenHelper.ID_STAGE);
+            int indexName = cursor.getColumnIndex(MySQLiteOpenHelper.STAGE_NAME_COLUMN);
+            int indexStageId = cursor.getColumnIndex(MySQLiteOpenHelper.STAGE_ID_COLUMN);
+
+            int stageIdColumn = cursor.getInt(indexStageId);
+            if (stageIdColumn == mTaskId) {
+                String stageTitle = cursor.getString(indexName);
+                Stage stage = new Stage(stageTitle);
+                mStagesAL.add(stage);
+            }
+        }
+    }
+
+    public void showTask(String taskTitle, String startDate, String endDate) {
+        mTextViewTitle.setText(taskTitle);
+        mTextViewStartDate.setText(startDate);
+        mTextViewEndDate.setText(endDate);
     }
 }
