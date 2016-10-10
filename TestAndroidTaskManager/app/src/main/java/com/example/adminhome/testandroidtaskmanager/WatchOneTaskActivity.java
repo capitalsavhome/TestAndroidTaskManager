@@ -72,6 +72,7 @@ public class WatchOneTaskActivity extends AppCompatActivity {
      */
     private ArrayList <Stage> mStagesAL;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
