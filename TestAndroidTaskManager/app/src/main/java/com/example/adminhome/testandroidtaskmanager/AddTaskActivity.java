@@ -170,11 +170,10 @@ public class AddTaskActivity extends AppCompatActivity {
                 //getting values from each holiday
                 TextView textViewNumber = (TextView) view.findViewById(R.id.tv_num_stage_lv);
                 TextView textViewName = (TextView) view.findViewById(R.id.tv_name_stage_lv);
-                for (int i = 0; i < mStagesAL.size(); i++) {
-                    textViewNumber.setText(Integer.toString(i + 1));
-                    Stage stage = mStagesAL.get(i);
-                    textViewName.setText(stage.getmSageName());
-                }
+                //=================================================
+                Stage stage = mStagesAL.get(position);
+                textViewName.setText(stage.getmSageName());
+                textViewNumber.setText(Integer.toString(position + 1));
 
                 return view;
             }
@@ -337,6 +336,7 @@ public class AddTaskActivity extends AppCompatActivity {
                 addNewStage(stageName);
                 //notify changes for ListView
                 mArrayAdapter.notifyDataSetChanged();
+                mEditTextStageTitle.setText("");
                 ((ViewGroup) (mDialogView.getParent())).removeAllViews();
             }
         });

@@ -158,10 +158,8 @@ public class MainActivity extends AppCompatActivity {
                 deleteTaskFromDataBase(id);
             }
         }
-        for (int i = 0; i < mTasksAL.size(); i++) {
-            mTasksAL.remove(i);
-            mArrayAdapter.notifyDataSetChanged();
-        }
+        mTasksAL.clear();
+        mArrayAdapter.notifyDataSetChanged();
         loadTasksFromDb();
 
     }

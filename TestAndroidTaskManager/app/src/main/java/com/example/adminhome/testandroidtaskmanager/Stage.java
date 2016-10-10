@@ -18,6 +18,11 @@ public class Stage {
      */
     private int mTask_id;
 
+    /**
+     * id auto increment primary key in current stage
+     */
+    private int mId_Stage;
+
     public Stage(String mSageName) {
         this.mSageName = mSageName;
     }
@@ -36,5 +41,13 @@ public class Stage {
 
     public void setmTask_id(int mTask_id) {
         this.mTask_id = mTask_id;
+    }
+
+    public int getmId_Stage() {
+        return mId_Stage;
+    }
+
+    public void setmId_Stage(int mId_Stage) {
+        this.mId_Stage = mId_Stage;
     }
 }

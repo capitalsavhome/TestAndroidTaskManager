@@ -35,7 +35,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:text="@string/stage_completed"
-        android:id="@+id/btn_stage_completed"/>
+        android:id="@+id/btn_stage_completed"
+        android:onClick="btnViewTaskClick"/>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
