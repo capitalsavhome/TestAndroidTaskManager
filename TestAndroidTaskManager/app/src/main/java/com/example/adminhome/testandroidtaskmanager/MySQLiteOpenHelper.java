@@ -68,6 +68,8 @@ public class MySQLiteOpenHelper extends SQLiteOpenHelper implements BaseColumns{
      */
     public static final String ID_STAGE = "_id";
 
+    public static final String IS_STAGE_COMPLETED = "is_stage_end";
+
 
     /**
      * constant with SQL request to DataBase (create new table Tasks)
@@ -83,9 +85,20 @@ public class MySQLiteOpenHelper extends SQLiteOpenHelper implements BaseColumns{
      */
     public static final String TABLE_STAGES_CREATE_SCRIPT = "CREATE TABLE "
             + STAGES_TABLE_NAME + " (" + ID_STAGE
-            + " integer primary key autoincrement, " + STAGE_NAME_COLUMN
+            + " integer primary key autoincrement, " + IS_STAGE_COMPLETED
+            + " integer not null, " + STAGE_NAME_COLUMN
             + " text not null, " + STAGE_ID_COLUMN + " integer not null, FOREIGN KEY ("
             + STAGE_ID_COLUMN + ") REFERENCES " + TASKS_TABLE_NAME + "(" + TASK_ID + "));";
+
+    /**
+     * constant which show that stage is not completed now
+     */
+    public static final int STAGE_IS_NOT_COMPLETED = 0;
+
+    /**
+     * constant which show that stage is completed
+     */
+    public static final int STAGE_IS_COMPLETED = 1;
 
     public MySQLiteOpenHelper (Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

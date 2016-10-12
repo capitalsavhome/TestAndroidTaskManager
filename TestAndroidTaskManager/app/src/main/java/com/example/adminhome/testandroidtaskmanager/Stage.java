@@ -23,6 +23,16 @@ public class Stage {
      */
     private int mId_Stage;
 
+    private boolean mIsStageCompleted;
+
+    public boolean ismIsStageCompleted() {
+        return mIsStageCompleted;
+    }
+
+    public void setmIsStageCompleted(boolean mIsStageCompleted) {
+        this.mIsStageCompleted = mIsStageCompleted;
+    }
+
     public Stage(String mSageName) {
         this.mSageName = mSageName;
     }

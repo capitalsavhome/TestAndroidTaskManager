@@ -262,6 +262,8 @@ public class AddTaskActivity extends AppCompatActivity {
             ContentValues row = new ContentValues();
             row.put(MySQLiteOpenHelper.STAGE_NAME_COLUMN, stage.getmSageName());
             row.put(MySQLiteOpenHelper.STAGE_ID_COLUMN, id);
+            row.put(MySQLiteOpenHelper.IS_STAGE_COMPLETED,
+                    MySQLiteOpenHelper.STAGE_IS_NOT_COMPLETED);
             long rowId = mDatabase.insert(MySQLiteOpenHelper.STAGES_TABLE_NAME, null, row);
             if (rowId != -1) {
                 Intent intent = new Intent(AddTaskActivity.this, MainActivity.class);

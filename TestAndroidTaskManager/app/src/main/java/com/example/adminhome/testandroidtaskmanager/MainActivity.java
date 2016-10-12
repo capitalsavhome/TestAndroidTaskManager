@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -59,6 +60,11 @@ public class MainActivity extends AppCompatActivity {
      */
     private SQLiteDatabase mDatabase;
 
+    /**
+     * array list contain all stages of all tasks
+     */
+    private ArrayList<Stage> mStagesAL;
+
 
 
 
@@ -78,6 +84,8 @@ public class MainActivity extends AppCompatActivity {
 
         mDatabase = MainActivity.mMySQLiteOpenHelper.getWritableDatabase();
 
+        mStagesAL = new ArrayList<>();
+
         loadTasksFromDb();
 
         final LayoutInflater inflater = this.getLayoutInflater();
@@ -89,8 +97,34 @@ public class MainActivity extends AppCompatActivity {
             public View getView(int position, View convertView, ViewGroup parent) {
                 View view = inflater.inflate(R.layout.tasks_list_view_item, parent, false);
                 TextView textView = (TextView) view.findViewById(R.id.tvCurrentTitle);
+                ProgressBar progressBarStage = (ProgressBar) view.findViewById(R.id.progBarStage);
+
                 final Task task = mTasksAL.get(position);
                 textView.setText(task.getmTitle().toString());
+                int taskId = task.getmTask_id();
+
+                ArrayList<Stage> currentStagesAL = new ArrayList<>();
+                for (int i = 0; i < mStagesAL.size(); i++) {
+                    Stage stage = mStagesAL.get(i);
+                    int taskIdStage = stage.getmTask_id();
+                    if (taskIdStage == taskId) {
+                        currentStagesAL.add(stage);
+                    }
+                }
+
+                int completedStagesCount = 0;
+
+                for (int i = 0; i < currentStagesAL.size(); i++) {
+                    Stage stage = currentStagesAL.get(i);
+                    if (stage.ismIsStageCompleted() == true) {
+                        completedStagesCount++;
+                    }
+                }
+                progressBarStage.setMax(5);
+                progressBarStage.setProgress(1);
+
+//                progressBarStage.setMax(currentStagesAL.size());
+//                progressBarStage.setProgress(completedStagesCount);
 
                 view.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -139,6 +173,43 @@ public class MainActivity extends AppCompatActivity {
                 Task task = new Task(taskName, startDate, endDate);
                 task.setmTask_id(id);
                 mTasksAL.add(task);
+
+                loadStagesFromDb(id);
+            }
+            while (cursor.moveToNext());
+            cursor.close();
+        }
+        else {
+            Log.d(Constants.TAG, "Can\'t position on first string of cursor");
+        }
+    }
+
+    public void loadStagesFromDb(int id) {
+        Cursor cursor = mDatabase.query(MySQLiteOpenHelper.STAGES_TABLE_NAME, null, null, null, null,
+                null, null);
+
+        if (cursor.moveToFirst()) {
+            int indexId = cursor.getColumnIndex(MySQLiteOpenHelper.ID_STAGE);
+            int indexName = cursor.getColumnIndex(MySQLiteOpenHelper.STAGE_NAME_COLUMN);
+            int indexStageId = cursor.getColumnIndex(MySQLiteOpenHelper.STAGE_ID_COLUMN);
+            int indexIsStageCompleted = cursor.getColumnIndex(MySQLiteOpenHelper.IS_STAGE_COMPLETED);
+
+            do {
+                int stageIdColumn = cursor.getInt(indexStageId);
+                if (stageIdColumn == id) {
+                    int idOfStage = cursor.getInt(indexId);
+                    String stageTitle = cursor.getString(indexName);
+                    int isStageCompleted = cursor.getInt(indexIsStageCompleted);
+                    Stage stage = new Stage(stageTitle);
+                    stage.setmId_Stage(idOfStage);
+                    if (isStageCompleted == MySQLiteOpenHelper.STAGE_IS_NOT_COMPLETED) {
+                        stage.setmIsStageCompleted(false);
+                    }
+                    else if(isStageCompleted == MySQLiteOpenHelper.STAGE_IS_COMPLETED) {
+                        stage.setmIsStageCompleted(true);
+                    }
+                    mStagesAL.add(stage);
+                }
             }
             while (cursor.moveToNext());
             cursor.close();
@@ -156,12 +227,23 @@ public class MainActivity extends AppCompatActivity {
                 Task task = mTasksAL.get(i);
                 int id = task.getmTask_id();
                 deleteTaskFromDataBase(id);
+                deleteStageFromAL(id);
             }
         }
         mTasksAL.clear();
         mArrayAdapter.notifyDataSetChanged();
         loadTasksFromDb();
 
+    }
+
+    public void deleteStageFromAL(int id_Task) {
+        for (int i = 0; i < mStagesAL.size(); i++) {
+            Stage stage = mStagesAL.get(i);
+            int taskId = stage.getmTask_id();
+            if (taskId == id_Task){
+                mStagesAL.remove(stage);
+            }
+        }
     }
 
     public void deleteTaskFromDataBase(int id) {
