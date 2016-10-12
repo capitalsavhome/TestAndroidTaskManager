@@ -6,10 +6,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/progBarStage"/>
-    <TextView
-        android:layout_width="150dp"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/tvCurrentTitle"/>
+        android:orientation="vertical"
+        android:layout_weight="1">
+        <TextView
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvCurrentTitle"/>
+        <ProgressBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
+            android:max="789"
+            android:progress="290"/>
+    </LinearLayout>
+
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

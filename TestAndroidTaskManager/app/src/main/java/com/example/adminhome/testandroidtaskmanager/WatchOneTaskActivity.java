@@ -209,14 +209,14 @@ public class WatchOneTaskActivity extends AppCompatActivity {
     }
 
     public void showCompletedStages() {
-        int countCompletedStage = 0;
+        int countCompletedStage = 1;
         for (int i = 0; i < mStagesAL.size(); i++) {
             Stage stage = mStagesAL.get(i);
             if (stage.ismIsStageCompleted()){
                 countCompletedStage++;
             }
         }
-        mTextViewStage.setText("Этапов выполнено: " + countCompletedStage + " / Всего: "
+        mTextViewStage.setText("Этап: " + countCompletedStage + " / Всего: "
                 + mStagesAL.size());
     }
 
@@ -254,7 +254,6 @@ public class WatchOneTaskActivity extends AppCompatActivity {
             if (!stage.ismIsStageCompleted()) {
                 makeStageCompleted(stage.getmId_Stage());
                 stage.setmIsStageCompleted(true);
-                System.out.println("==============================================");
                 break;
             }
         }

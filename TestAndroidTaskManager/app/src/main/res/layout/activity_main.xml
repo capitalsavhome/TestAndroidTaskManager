@@ -28,7 +28,9 @@
                 android:text="@string/create_task"
                 android:id="@+id/btnCreateTask"
                 android:onClick="btnMainClick"
-                android:textSize="10pt"/>
+                android:textSize="10pt"
+                android:background="#4CAF50"
+                android:textColor="#FFFFFF"/>
             <Button
                 android:layout_width="0dp"
                 android:layout_weight="0.5"
@@ -36,7 +38,9 @@
                 android:text="@string/remove_tasks"
                 android:id="@+id/btnRemoveTasks"
                 android:onClick="btnMainClick"
-                android:textSize="10pt"/>
+                android:textSize="10pt"
+                android:background="#D32F2F"
+                android:textColor="#FFFFFF"/>
         </TableRow>
     </TableLayout>
 

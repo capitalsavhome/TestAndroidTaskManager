@@ -11,32 +11,38 @@
     tools:context="com.example.adminhome.testandroidtaskmanager.AddTaskActivity">
 
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/view_activity_title"
-        android:textSize="12pt"/>
+        android:textSize="12pt"
+        android:layout_gravity="center_horizontal"/>
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/view_activity_startDate"
-        android:textSize="12pt"/>
+        android:textSize="12pt"
+        android:layout_gravity="center_horizontal"/>
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/view_activity_endDate"
-        android:textSize="12pt"/>
+        android:textSize="12pt"
+        android:layout_gravity="center_horizontal"/>
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/view_activity_currentStage"
-        android:textSize="12pt"/>
+        android:textSize="12pt"
+        android:layout_gravity="center_horizontal"/>
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:text="@string/stage_completed"
         android:id="@+id/btn_stage_completed"
-        android:onClick="btnViewTaskClick"/>
+        android:onClick="btnViewTaskClick"
+        android:background="#4CAF50"
+        android:textColor="#FFFFFF"/>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -53,7 +59,9 @@
                 android:text="@string/btn_back"
                 android:id="@+id/btn_view_back"
                 android:onClick="btnViewTaskClick"
-                android:textSize="10pt"/>
+                android:textSize="10pt"
+                android:background="#4CAF50"
+                android:textColor="#FFFFFF"/>
             <Button
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -61,7 +69,9 @@
                 android:text="@string/btn_delete_current_task"
                 android:id="@+id/btn_view_delete_task"
                 android:onClick="btnViewTaskClick"
-                android:textSize="10pt"/>
+                android:textSize="10pt"
+                android:background="#D32F2F"
+                android:textColor="#FFFFFF"/>
         </TableRow>
     </TableLayout>
 
