@@ -136,14 +136,22 @@ public class WatchOneTaskActivity extends AppCompatActivity {
             int indexId = cursor.getColumnIndex(MySQLiteOpenHelper.ID_STAGE);
             int indexName = cursor.getColumnIndex(MySQLiteOpenHelper.STAGE_NAME_COLUMN);
             int indexStageId = cursor.getColumnIndex(MySQLiteOpenHelper.STAGE_ID_COLUMN);
+            int indexIsStageCompleted = cursor.getColumnIndex(MySQLiteOpenHelper.IS_STAGE_COMPLETED);
 
             do {
                 int stageIdColumn = cursor.getInt(indexStageId);
                 if (stageIdColumn == mTaskId) {
                     int idOfStage = cursor.getInt(indexId);
                     String stageTitle = cursor.getString(indexName);
+                    int is_stage_completed = cursor.getInt(indexIsStageCompleted);
                     Stage stage = new Stage(stageTitle);
                     stage.setmId_Stage(idOfStage);
+                    if (is_stage_completed == MySQLiteOpenHelper.STAGE_IS_COMPLETED) {
+                        stage.setmIsStageCompleted(true);
+                    }
+                    else if (is_stage_completed == MySQLiteOpenHelper.STAGE_IS_NOT_COMPLETED) {
+                        stage.setmIsStageCompleted(false);
+                    }
                     mStagesAL.add(stage);
                 }
             }
@@ -171,9 +179,17 @@ public class WatchOneTaskActivity extends AppCompatActivity {
             finishThisActivity();
         }
         else {
-            Stage stage = mStagesAL.get(FIRST_ELEMENT);
-            String stageTitle = stage.getmSageName();
-            mTextViewStageDescr.setText(stageTitle);
+            for (int i = 0; i < mStagesAL.size(); i++) {
+                Stage stage = mStagesAL.get(i);
+                if (!stage.ismIsStageCompleted()) {
+                    String stageTitle = stage.getmSageName();
+                    mTextViewStageDescr.setText(stageTitle);
+                    break;
+                }
+            }
+            showCompletedStages();
+            //Stage stage = mStagesAL.get(FIRST_ELEMENT);
+
         }
     }
 
@@ -185,29 +201,68 @@ public class WatchOneTaskActivity extends AppCompatActivity {
         Log.d(Constants.TAG, "delete successful");
     }
 
-    public void removeStage(int id_Stage) {
-        mDatabase.execSQL("DELETE FROM " + MySQLiteOpenHelper.STAGES_TABLE_NAME + " WHERE "
-                + MySQLiteOpenHelper.ID_STAGE + " = " + id_Stage + ";");
-        mStagesAL.remove(FIRST_ELEMENT);
-        for (int i = 0; i < mStagesAL.size(); i++) {
-            Log.d(Constants.TAG, "Проверка размера коллекции");
-        }
+    public void makeStageCompleted(int id_Stage) {
+        mDatabase.execSQL("UPDATE " + MySQLiteOpenHelper.STAGES_TABLE_NAME
+                + " SET " + MySQLiteOpenHelper.IS_STAGE_COMPLETED + " = "
+                + MySQLiteOpenHelper.STAGE_IS_COMPLETED + " WHERE "
+                + MySQLiteOpenHelper.ID_STAGE + " = " + id_Stage);
     }
 
+    public void showCompletedStages() {
+        int countCompletedStage = 0;
+        for (int i = 0; i < mStagesAL.size(); i++) {
+            Stage stage = mStagesAL.get(i);
+            if (stage.ismIsStageCompleted()){
+                countCompletedStage++;
+            }
+        }
+        mTextViewStage.setText("Этапов выполнено: " + countCompletedStage + " / Всего: "
+                + mStagesAL.size());
+    }
+
+//    public void removeStage(int id_Stage) {
+//        mDatabase.execSQL("DELETE FROM " + MySQLiteOpenHelper.STAGES_TABLE_NAME + " WHERE "
+//                + MySQLiteOpenHelper.ID_STAGE + " = " + id_Stage + ";");
+//        mStagesAL.remove(FIRST_ELEMENT);
+//    }
+
     public boolean checkStages() {
-        if (mStagesAL.isEmpty()) {
+        int countCompletedStage = 0;
+        for (int i = 0; i < mStagesAL.size(); i++) {
+            Stage stage = mStagesAL.get(i);
+            if (stage.ismIsStageCompleted()) {
+                countCompletedStage++;
+            }
+        }
+        if (countCompletedStage == mStagesAL.size()) {
             return true;
         }
         else {
             return false;
         }
+//        if (mStagesAL.isEmpty()) {
+//            return true;
+//        }
+//        else {
+//            return false;
+//        }
     }
 
     public void removeCurrentStage() {
-        Stage stage = mStagesAL.get(FIRST_ELEMENT);
-        int id_stage = stage.getmId_Stage();
-        removeStage(id_stage);
+        for (int i = 0; i < mStagesAL.size(); i++) {
+            Stage stage = mStagesAL.get(i);
+            if (!stage.ismIsStageCompleted()) {
+                makeStageCompleted(stage.getmId_Stage());
+                stage.setmIsStageCompleted(true);
+                System.out.println("==============================================");
+                break;
+            }
+        }
         showStage();
+//        Stage stage = mStagesAL.get(FIRST_ELEMENT);
+//        int id_stage = stage.getmId_Stage();
+//        removeStage(id_stage);
+//        showStage();
     }
 
     public void finishThisActivity() {
