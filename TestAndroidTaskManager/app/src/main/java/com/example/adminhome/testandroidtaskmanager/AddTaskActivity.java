@@ -173,7 +173,7 @@ public class AddTaskActivity extends AppCompatActivity {
 
                 final Stage stage = mStagesAL.get(position);
                 textViewName.setText(stage.getmSageName());
-                textViewNumber.setText(Integer.toString(position + 1));
+                textViewNumber.setText(Integer.toString(position + 1) + " ");
 
                 Button button = (Button) view.findViewById(R.id.btn_delete_stage);
 

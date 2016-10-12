@@ -126,6 +126,9 @@ public class MainActivity extends AppCompatActivity {
 //                progressBarStage.setMax(currentStagesAL.size());
 //                progressBarStage.setProgress(completedStagesCount);
 
+                String startDateStr = task.getmStartDate();
+                String endDateStr = task.getmEndDate();
+
                 view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
