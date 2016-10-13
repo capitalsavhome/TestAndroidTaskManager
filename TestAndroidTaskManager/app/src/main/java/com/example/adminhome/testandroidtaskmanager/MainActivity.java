@@ -20,6 +20,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -126,8 +128,48 @@ public class MainActivity extends AppCompatActivity {
 //                progressBarStage.setMax(currentStagesAL.size());
 //                progressBarStage.setProgress(completedStagesCount);
 
+                //==================================================================================
+                //                                  PARSING DATE
+                //==================================================================================
+
                 String startDateStr = task.getmStartDate();
                 String endDateStr = task.getmEndDate();
+
+                Calendar calendarStart = getCalendarFromString(startDateStr);
+                Calendar calendarEnd = getCalendarFromString(endDateStr);
+                Calendar calendarNow = Calendar.getInstance();
+
+                calendarStart.set(Calendar.HOUR_OF_DAY, 8);
+                calendarStart.set(Calendar.MINUTE, 00);
+                calendarStart.set(Calendar.SECOND, 00);
+
+                calendarEnd.set(Calendar.HOUR_OF_DAY, 23);
+                calendarEnd.set(Calendar.MINUTE, 59);
+                calendarEnd.set(Calendar.SECOND, 00);
+
+                long startMillis = calendarStart.getTimeInMillis();
+                long endMillis = calendarEnd.getTimeInMillis();
+                long nowMillis = calendarNow.getTimeInMillis();
+
+                long longStartHour = startMillis / 3600000;
+                long longEndHour = endMillis / 3600000;
+                long longNowHour = nowMillis / 3600000;
+
+                int startHour = (int) longStartHour;
+                int endHour = (int) longEndHour;
+                int nowHour = (int) longNowHour;
+
+                int maxTime = endHour - startHour;
+                int progressTime = nowHour - startHour;
+
+
+                ProgressBar horizontalProgressBar = (ProgressBar) view.findViewById(R.id.progBarTime);
+                horizontalProgressBar.setMax(maxTime);
+                horizontalProgressBar.setProgress(progressTime);
+
+                //==================================================================================
+                //==================================================================================
+
 
                 view.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -136,6 +178,7 @@ public class MainActivity extends AppCompatActivity {
                         Intent intent = new Intent(MainActivity.this, WatchOneTaskActivity.class);
                         intent.putExtra("Task_id", id);
                         startActivity(intent);
+                        finish();
                     }
                 });
 
@@ -145,12 +188,29 @@ public class MainActivity extends AppCompatActivity {
         mListView.setAdapter(mArrayAdapter);
     }
 
+    public Calendar getCalendarFromString(String date) {
+        int firstIndex = date.indexOf("-");
+        Log.d(Constants.TAG, Integer.toString(firstIndex));
+        int secondIndex = date.indexOf("-", firstIndex + 1);
+        Log.d(Constants.TAG, Integer.toString(secondIndex));
+        String strDayOfMonth = date.substring(0, firstIndex);
+        String strMonth = date.substring(firstIndex + 1, secondIndex);
+        String strYear = date.substring(secondIndex + 1);
+        int year = Integer.parseInt(strYear);
+        int month = Integer.parseInt(strMonth);
+        int dayOfMonth = Integer.parseInt(strDayOfMonth);
+
+        Calendar calendar = new GregorianCalendar(year, month, dayOfMonth);
+        return calendar;
+    }
+
     public void btnMainClick(View view) {
         int id = view.getId();
         switch (id) {
             case R.id.btnCreateTask:
                 Intent intent = new Intent(MainActivity.this, AddTaskActivity.class);
                 startActivity(intent);
+                finish();
                 break;
             case R.id.btnRemoveTasks:
                 deleteSelectedTasks();
